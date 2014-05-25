@@ -1,0 +1,50 @@
+
+@@item Function ssss 
+l;sdjfsdkfjsldfj
+sdlkfjsdlkfjs
+sdklfjskldf
+
+@@item asdfsldkfjsd
+sdl;kfjsd
+sdlfkjs
+skldjf
+
+@@item Funsdkf 
+	using namespace std;
+	ifstream fin(fileName.c_str());
+	if (!fin.is_open())
+		return false;
+
+	int selectItem = -1;
+	string source;
+
+	while (1)
+	{
+		string str;
+		if (!std::getline(fin, str))
+			break;
+		const int idx = str.find("@@item");
+		if (string::npos == idx)
+		{
+			source += str;
+			source += "\n";
+		}
+		else
+		{
+			if (selectItem >= 0)
+				m_itemSource.push_back(source);
+
+			source.clear();// 초기화.
+			++selectItem;
+			m_itemStr.push_back( &str[6] );
+		}
+	}
+	// 마지막 소스 내용 추가.
+	if (!source.empty())
+		m_itemSource.push_back(source);
+
+	for (int i=0; i < (int)m_itemStr.size(); ++i)
+	{
+		m_listCtrl->InsertItem(i, m_itemStr[ i]);
+	}
+
