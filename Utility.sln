@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodeSnippets", "CodeSnippets\CodeSnippets.vcxproj", "{E664D84A-D885-4752-B1A8-DE70A61532FA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatrixCalc", "MatrixCalc\MatrixCalc.vcxproj", "{C7804807-F922-47DB-8B07-BB2A1908BD16}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VectorCalc", "VectorCalc\VectorCalc.vcxproj", "{0C3FC449-206C-4793-98A6-6C049A089492}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +17,14 @@ Global
 		{E664D84A-D885-4752-B1A8-DE70A61532FA}.Debug|Win32.Build.0 = Debug|Win32
 		{E664D84A-D885-4752-B1A8-DE70A61532FA}.Release|Win32.ActiveCfg = Release|Win32
 		{E664D84A-D885-4752-B1A8-DE70A61532FA}.Release|Win32.Build.0 = Release|Win32
+		{C7804807-F922-47DB-8B07-BB2A1908BD16}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C7804807-F922-47DB-8B07-BB2A1908BD16}.Debug|Win32.Build.0 = Debug|Win32
+		{C7804807-F922-47DB-8B07-BB2A1908BD16}.Release|Win32.ActiveCfg = Release|Win32
+		{C7804807-F922-47DB-8B07-BB2A1908BD16}.Release|Win32.Build.0 = Release|Win32
+		{0C3FC449-206C-4793-98A6-6C049A089492}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C3FC449-206C-4793-98A6-6C049A089492}.Debug|Win32.Build.0 = Debug|Win32
+		{0C3FC449-206C-4793-98A6-6C049A089492}.Release|Win32.ActiveCfg = Release|Win32
+		{0C3FC449-206C-4793-98A6-6C049A089492}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
