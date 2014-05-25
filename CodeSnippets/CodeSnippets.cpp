@@ -92,6 +92,8 @@ MyFrame::MyFrame(const wxString& title)
 	SetMenuBar(menuBar);
 #endif // wxUSE_MENUS
 
+
+
 	wxBoxSizer *row1 = new wxBoxSizer(wxVERTICAL);
 	SetSizer(row1);
 
@@ -137,6 +139,7 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 		wxOK | wxICON_INFORMATION,
 		this);
 }
+
 
 void MyFrame::OnSelected(wxListEvent& event)
 {
