@@ -92,7 +92,7 @@ MyFrame::MyFrame(const wxString& title)
 	SetMenuBar(menuBar);
 #endif // wxUSE_MENUS
 
-	wxBoxSizer *row1 = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *row1 = new wxBoxSizer(wxVERTICAL);
 	SetSizer(row1);
 
 	wxBoxSizer *column1 = new wxBoxSizer(wxVERTICAL);
@@ -105,9 +105,9 @@ MyFrame::MyFrame(const wxString& title)
 		wxLC_LIST | wxBORDER_THEME | wxLC_EDIT_LABELS);
 	column1->Add( m_listCtrl, 1, wxEXPAND, 10 );
 
-	m_textCtrl = new wxTextCtrl( this, wxID_ANY, wxT("Single line."),
+	m_textCtrl = new wxTextCtrl( this, wxID_ANY, wxT("souce code"),
 		wxDefaultPosition, wxDefaultSize,
-		wxTE_MULTILINE | wxTE_PROCESS_ENTER | wxTE_RICH);
+		wxTE_READONLY | wxTE_MULTILINE | wxTE_PROCESS_ENTER | wxTE_RICH);
 	column2->Add( m_textCtrl, 1, wxEXPAND, 10 );
 
 	m_itemStr.reserve(128);
