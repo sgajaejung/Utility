@@ -13,8 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="mat">
-      <UniqueIdentifier>{a15e4c7c-a4a7-49b8-84e7-c2ae1d6c54e4}</UniqueIdentifier>
+    <Filter Include="math">
+      <UniqueIdentifier>{863a4be3-a09b-4b7f-8c3b-29b7705c03be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,16 +58,16 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\math\matrix44.h">
-      <Filter>mat</Filter>
+      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="..\math\vector3.h">
-      <Filter>mat</Filter>
+      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="..\math\vector4.h">
-      <Filter>mat</Filter>
+      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="..\math\math.h">
-      <Filter>mat</Filter>
+      <Filter>math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -96,13 +96,13 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\math\vector3.cpp">
-      <Filter>mat</Filter>
+      <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="..\math\vector4.cpp">
-      <Filter>mat</Filter>
+      <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="..\math\matrix44.cpp">
-      <Filter>mat</Filter>
+      <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

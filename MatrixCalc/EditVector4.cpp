@@ -5,7 +5,7 @@
 #include "MatrixCalc.h"
 #include "EditVector4.h"
 #include "afxdialogex.h"
-#include "../math/math.h"
+//#include "../math/math.h"
 
 
 // CEditVector4 대화 상자입니다.
