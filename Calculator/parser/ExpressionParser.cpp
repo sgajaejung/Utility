@@ -11,18 +11,12 @@ CExpressionParser::CExpressionParser()
 	m_pRmiList = NULL;
 	m_bTrace = FALSE;
 	m_bError = FALSE;
-	m_bAutoRemove = TRUE;
 
 }
 
 CExpressionParser::~CExpressionParser()
 {
 	SAFE_DELETE(m_pScan);
-
-	if (m_bAutoRemove)
-	{
-		ReleaseRmi(m_pRmiList);
-	}
 }
 
 
@@ -44,7 +38,17 @@ sRmi* CExpressionParser::Parse( const char *szFileName, BOOL bTrace )
 		return NULL;
 	}
 
-	m_pRmiList = rmi_list();
+	if (VOUT == m_Token)
+	{
+		m_vector = assignVOut().v;
+		m_mat = assignMOut().m;
+	}
+	else if (MOUT == m_Token)
+	{
+		m_mat = assignMOut().m;
+		m_vector = assignVOut().v;
+	}
+
 
 	if( ENDFILE != m_Token )
 	{
@@ -61,274 +65,204 @@ sRmi* CExpressionParser::Parse( const char *szFileName, BOOL bTrace )
 //	assignVOut -> VOut = exp
 sExpr CExpressionParser::assignVOut()
 {
-	sExpr expr;
+	Match(VOUT);
+	Match(ASSIGN);
 
-
-	return expr;
+	sExpr exp = expr();
+	return exp;
 }
 
 
+//	assignMOut -> MOut = exp
 sExpr CExpressionParser::assignMOut()
 {
-	sExpr expr;
+	Match(MOUT);
+	Match(ASSIGN);
 
-	return expr;
+	sExpr exp = expr();
+	return exp;
 }
 
 
+//	expr -> term +/- expr | term
 sExpr CExpressionParser::expr()
 {
-	sExpr expr;
+	sExpr exp1 = term();
 
-	return expr;
+	const Tokentype tok = m_Token;
+	if ((PLUS == m_Token) || (MINUS == m_Token))
+	{
+		Match(m_Token);
+	}
+	else
+	{
+		return exp1;
+	}
+
+	sExpr exp2 = expr();
+
+	sExpr ret;
+	if (PLUS == tok)
+	{
+		ret = exp1 + exp2;
+	}
+	else if (MINUS == tok)
+	{
+		ret = exp1 - exp2;
+	}
+
+	return ret;
 }
 
 
+//	term -> factor *// term | term
 sExpr CExpressionParser::term()
 {
-	sExpr expr;
+	sExpr exp1 = factor();
 
-	return expr;
+	const Tokentype tok = m_Token;
+	if ((TIMES == m_Token) || (DIV == m_Token))
+	{
+		Match(m_Token);
+	}
+	else
+	{
+		return exp1;
+	}
+
+	sExpr exp2 = term();
+
+	sExpr ret;
+	if (TIMES == tok)
+	{
+		ret = exp1 * exp2;
+	}
+	else
+	{
+		ret = exp1 / exp2;
+	}
+
+	return ret;
 }
 
 
+//	factor -> (expr) | type
 sExpr CExpressionParser::factor()
 {
-	sExpr expr;
+	sExpr ret;
 
-	return expr;
+	if (LPAREN == m_Token)
+	{
+		Match(LPAREN);
+		ret = expr();
+		Match(RPAREN);
+	}
+	else
+	{
+		ret = type();
+	}
+	
+	return ret;
 }
 
 
+//	type -> Vertex | Translate | Rotate | Scale | num
 sExpr CExpressionParser::type()
 {
-	sExpr expr;
-
-	return expr;
-}
-
-
-
-// rmi_list -> (rmi)*
-sRmi* CExpressionParser::rmi_list()
-{
-	sRmi *p = rmi();
-	sRmi *first = p;
-	while (p && (p->next = rmi()))
-	{
-		p = p->next;
-	}
-	return first;
-}
-
-// rmi -> global id number '{' stmt_list '}'
-sRmi* CExpressionParser::rmi()
-{
-	sRmi *p = NULL;
-	
-	if (PROTOCOL == m_Token)
-	{
-		Match(PROTOCOL);
-		p = new sRmi;
-		p->name = id();
-		p->number = num();
-		Match(LBRACE);
-		p->protocol = stmt_list();
-		Match(RBRACE);
-	}
-
-	return p;
-}
-
-// stmt_list -> (stmt)*
-sProtocol* CExpressionParser::stmt_list()
-{
-	sProtocol *p = stmt();
-	sProtocol *first = p;
-	while (p && (p->next = stmt()))
-	{
-		p = p->next;
-	}
-	return first;
-}
-
-// stmt -> protocol semicolon
-sProtocol* CExpressionParser::stmt()
-{
-	sProtocol *p = protocol();
-	if (p)
-		Match(SEMICOLON);
-	return p;
-}
-
-// protocol -> id '(' arg_list ')'
-sProtocol* CExpressionParser::protocol()
-{
-	sProtocol*p=NULL;
-	if (ID == m_Token)
-	{
-		p = new sProtocol;
-		p->name = id();
-		Match(LPAREN);
-		p->argList = arg_list();
-		Match(RPAREN);
-		p->next = NULL;
-	}
-	return p;
-}
-
-
-// arg_list -> [arg (',' arg)*]
-sArg* CExpressionParser::arg_list()
-{
-	sArg *p = arg();
-	if (!p)
-		return NULL;
-
-	sArg *first = p;
-	while (COMMA == m_Token)
-	{
-		Match(COMMA);
-		p->next = arg();
-		p = p->next;
-	}
-
-	return first;
-}
-
-// arg -> type
-sArg* CExpressionParser::arg()
-{
-	sArg *p = NULL;
-	if (ID == m_Token)
-	{
-		p = new sArg;
-		//p->var = type();
-		p->next = NULL;
-	}
-	return p;
-}
-
-//// type -> type_sub (var)?
-//sTypeVar* CExpressionParser::type()
-//{
-//	sTypeVar *p=NULL;
-//	if (ID != m_Token)
-//		return NULL;
-//
-//	Tokentype nextTok = m_pScan->GetTokenQ(1);
-//	p = new sTypeVar;
-//	p->type = type_sub();
-//	p->var = var();
-//
-//	return p;
-//}
-
-// type_sub -> id '<' type_sub '>'
-//			| id::id
-//			| id
-std::string CExpressionParser::type_sub()
-{
-	std::string str = "";
+	sExpr ret;
 
 	if (ID == m_Token)
 	{
-		Tokentype nextTok = m_pScan->GetTokenQ(1);
-		if (LT == nextTok)
+		string str = m_pScan->GetTokenStringQ(0);
+		if (str == "V")
 		{
-			str += id();
-			str += "<";
-			Match(LT);
-			str += type_sub();
-			str += ">";
-			Match(RT);
+			const Vector3 v = num3();
+			ret.type = 1;
+			ret.v = v;
 		}
-		else if (SCOPE == nextTok)
+		else if (str == "T")
 		{
-			str += id();
-			str += "::";
-			Match(SCOPE);
-			str += type_sub();
+			const Vector3 v = num3();
+			ret.type = 0;
+			ret.m.SetTranslate(v);
 		}
-		else
+		else if (str == "S")
 		{
-			str += id();
+			const Vector3 v = num3();
+			ret.type = 0;
+			ret.m.SetScale(v);
 		}
+		else if (str == "Rx")
+		{
+			Match(ID);
+			Match(LPAREN);
+			ret.type = 0;
+			const float v = fnum();
+			ret.m.SetRotationX(v);
+			Match(RPAREN);
+		}
+		else if (str == "Ry")
+		{
+			Match(ID);
+			Match(LPAREN);
+			ret.type = 0;
+			const float v = fnum();
+			ret.m.SetRotationY(v);
+			Match(RPAREN);
+		}
+		else if (str == "Rz")
+		{
+			Match(ID);
+			Match(LPAREN);
+			ret.type = 0;
+			const float v = fnum();
+			ret.m.SetRotationZ(v);
+			Match(RPAREN);
+		}
+
+	}
+	else if (NUM == m_Token)
+	{
+		const string str = m_pScan->GetTokenStringQ(0);
+		ret.type = 2;
+		ret.s = (float)atof(str.c_str());
 	}
 
-	return str;
+	return ret;
 }
 
-// var -> '*' id (index)?
-//	    | '&' id (index)?
-//		| id (index)?
-//	    | '*'
-//		| '&'
-std::string CExpressionParser::var()
+
+// num3 -> id( num, num, num )
+Vector3 CExpressionParser::num3()
 {
-	std::string str = "";
-	Tokentype nextTok = m_pScan->GetTokenQ(1);
+	Vector3 ret;
 
-	if (TIMES == m_Token && ID == nextTok)
-	{
-		Match(TIMES);
-		str += "*";
-		str += id();
-		str += index();
-	}
-	else if (REF == m_Token && ID == nextTok)
-	{
-		Match(REF);
-		str += "&";
-		str += id();
-		str += index();
-	}
-	else if (ID == m_Token)
-	{
-		str += id();
-		str += index();
-	}
-	else if (TIMES == m_Token)
-	{
-		Match(TIMES);
-		str += "*";
-	}
-	else if (REF == m_Token)
-	{
-		Match(REF);
-		str += "&";
-	}
+	Match(ID);
+	Match(LPAREN);
+	ret.x = fnum();
+	Match(COMMA);
+	ret.y = fnum();
+	Match(COMMA);
+	ret.z  = fnum();
+	Match(RPAREN);
 
-	return str;
+	return ret;
 }
 
-std::string CExpressionParser::index()
-{
-	std::string str = "";
-	if (LBRACKET == m_Token)
-	{
-		Match(LBRACKET);
-		str += "[";
-		str += number();
-		str += "]";
-		Match(RBRACKET);
-	}
-	return str;
-}
 
-std::string CExpressionParser::number()
-{
-	std::string str = "";
-	str = m_pScan->GetTokenStringQ(0);
-	Match(NUM);
-	return str;
-}
 
 int CExpressionParser::num()
 {
 	int n = atoi(m_pScan->GetTokenStringQ(0));
 	Match(NUM);
 	return n;
+}
+
+float CExpressionParser::fnum()
+{
+	float f = (float)atof(m_pScan->GetTokenStringQ(0));
+	Match(NUM);
+	return f;
 }
 
 std::string CExpressionParser::id()

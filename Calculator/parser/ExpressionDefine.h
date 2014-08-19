@@ -15,7 +15,7 @@ namespace parser
 		_ERROR, ENDFILE, ID, NUM, FNUM, STRING, ASSIGN, LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, COMMA, COLON, SEMICOLON,
 		PLUS, MINUS, TIMES, DIV, REMAINDER, REF, ARROW,
 		LT/* < */, RT/* > */, LTEQ/* <= */, RTEQ/* >= */, NEQ/* != */, EQ/* == */, OR/* || */, AND/* && */, NEG/* ! */, SCOPE/*::*/,
-		EVENT, UIEVENT, CUSTOMEVENT, IF, ELSE, WHILE, FUNCTION, ARG_IN, PROTOCOL,
+		VOUT, MOUT,
 	};
 
 	enum NodeKind { Stmt, Exp };
@@ -67,18 +67,15 @@ namespace parser
 		float s;
 		Matrix44 m;
 		Vector3 v;
+
+		sExpr operator+ (const sExpr &rhs);
+		sExpr operator- (const sExpr &rhs);
+		sExpr operator* (const sExpr &rhs);
+		sExpr operator/ (const sExpr &rhs);
 	};
 
 
 
-
-	// Release Protocol Parser Tree
-	void ReleaseRmi(sRmi *p);
-	void ReleaseRmiOnly(sRmi *p);
-	void ReleaseProtocol(sProtocol *p);
-	void ReleaseCurrentProtocol(sProtocol *p);
-	void ReleaseArg(sArg *p);
-	
 	// Functions
 	void PrintToken( Tokentype token, char *szTokenString );
 
