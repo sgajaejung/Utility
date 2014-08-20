@@ -104,7 +104,9 @@ MyFrame::MyFrame(const wxString& title)
 
 	m_listCtrl = new wxListCtrl(this, LIST_CTRL,
 		wxDefaultPosition, wxDefaultSize,
-		wxLC_LIST | wxBORDER_THEME | wxLC_EDIT_LABELS);
+		wxLC_REPORT | wxBORDER_THEME);
+	m_listCtrl->InsertColumn(0, "contents");
+	m_listCtrl->SetColumnWidth(0, 550);
 	column1->Add( m_listCtrl, 1, wxEXPAND, 10 );
 
 	m_textCtrl = new wxTextCtrl( this, wxID_ANY, wxT("souce code"),

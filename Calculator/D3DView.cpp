@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Calculator.h"
 #include "D3DView.h"
+#include "parser/ExpressionParser.h"
 
 
 // CD3DView
@@ -26,6 +27,10 @@ BEGIN_MESSAGE_MAP(CD3DView, CWnd)
 	ON_WM_MOUSEMOVE()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
+	ON_WM_KEYDOWN()
+	ON_WM_MOUSEWHEEL()
+	ON_WM_MBUTTONUP()
+	ON_WM_MBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -40,7 +45,11 @@ bool CD3DView::Init()
 
 	m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
 
+	parser::CExpressionParser ps;
+	ps.Parse( "expression.txt" );
+	m_cube.SetTransform( ps.m_mat );
 
+	SetFocus();
 	return true;
 }
 
@@ -85,7 +94,7 @@ void CD3DView::Update(float elapseT)
 
 void CD3DView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-
+	SetFocus();
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
@@ -105,6 +114,23 @@ void CD3DView::OnMouseMove(UINT nFlags, CPoint point)
 		m_curPos = point;
 		m_camera.Pitch2(pos.y * -0.005f); 
 		m_camera.Yaw2(pos.x * -0.005f); 
+	}
+	else if (m_MButtonDown)
+	{
+		CPoint pos = point - m_curPos;
+		m_curPos = point;
+
+		Vector3 dir = m_camera.GetDirection();
+		dir.y = 0;
+		dir.Normalize();
+
+		const float len = m_camera.GetDistance();
+		m_camera.MoveRight( -pos.x * len * 0.001f );
+		m_camera.MoveAxis( dir, pos.y * len * 0.001f );
+	}
+	else
+	{
+		m_curPos = point;
 	}
 
 	CWnd::OnMouseMove(nFlags, point);
@@ -126,4 +152,47 @@ void CD3DView::OnRButtonUp(UINT nFlags, CPoint point)
 	ReleaseCapture();
 	m_RButtonDown = false;
 	CWnd::OnRButtonUp(nFlags, point);
+}
+
+
+BOOL CD3DView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	const float len = m_camera.GetDistance();
+	float zoomLen = (len > 100)? 50 : (len/4.f);
+	if (nFlags & 0x4)
+		zoomLen = zoomLen/10.f;
+
+	m_camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );	
+
+	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+
+void CD3DView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (nChar == VK_F5)
+	{
+		parser::CExpressionParser ps;
+		ps.Parse( "expression.txt" );
+		m_cube.SetTransform( ps.m_mat );		
+	}
+
+	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+
+void CD3DView::OnMButtonUp(UINT nFlags, CPoint point)
+{
+	m_MButtonDown = false;
+	ReleaseCapture();
+	CWnd::OnMButtonUp(nFlags, point);
+}
+
+
+void CD3DView::OnMButtonDown(UINT nFlags, CPoint point)
+{
+	SetFocus();
+	SetCapture();
+	m_MButtonDown = true;
+	CWnd::OnMButtonDown(nFlags, point);
 }

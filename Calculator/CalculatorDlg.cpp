@@ -9,6 +9,7 @@
 #include <MMSystem.h>
 #include "D3DView.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -87,7 +88,6 @@ BOOL CCalculatorDlg::OnInitDialog()
 	
 	m_view->Init();
 	m_view->ShowWindow(SW_SHOW);
-
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
