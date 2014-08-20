@@ -299,8 +299,27 @@ int CExpressionParser::num()
 
 float CExpressionParser::fnum()
 {
-	float f = (float)atof(m_pScan->GetTokenStringQ(0));
-	Match(NUM);
+	float f = 0;
+	if (MINUS == m_Token)
+	{
+		Match(MINUS);
+		f = (float)atof(m_pScan->GetTokenStringQ(0));
+		Match(NUM);
+
+		f = -f;
+	}
+	else if (PLUS == m_Token)
+	{
+		Match(PLUS);
+		f = (float)atof(m_pScan->GetTokenStringQ(0));
+		Match(NUM);
+	}
+	else
+	{
+		f = (float)atof(m_pScan->GetTokenStringQ(0));
+		Match(NUM);
+	}
+
 	return f;
 }
 

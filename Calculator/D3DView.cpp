@@ -45,10 +45,6 @@ bool CD3DView::Init()
 
 	m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
 
-	parser::CExpressionParser ps;
-	ps.Parse( "expression.txt" );
-	m_cube.SetTransform( ps.m_mat );
-
 	SetFocus();
 	return true;
 }
@@ -170,13 +166,6 @@ BOOL CD3DView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CD3DView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	if (nChar == VK_F5)
-	{
-		parser::CExpressionParser ps;
-		ps.Parse( "expression.txt" );
-		m_cube.SetTransform( ps.m_mat );		
-	}
-
 	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 

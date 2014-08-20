@@ -102,6 +102,8 @@ MOut = T(0,50,0) * S(1,2,1) * Rx(0.2) * Ry(0.6)";
 
 	m_EditSource.SetWindowText( source );
 
+	m_view->ParseSource( wstr2str((wstring)source) );
+
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
