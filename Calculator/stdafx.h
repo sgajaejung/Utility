@@ -66,5 +66,5 @@ using namespace common;
 static const int VIEW_WIDTH = 800;
 static const int VIEW_HEIGHT = 600;
 static const int REAL_WINDOW_WIDTH = VIEW_WIDTH+18;
-static const int REAL_WINDOW_HEIGHT = VIEW_HEIGHT+70;
+static const int REAL_WINDOW_HEIGHT = VIEW_HEIGHT+160;
 

@@ -62,6 +62,45 @@ sRmi* CExpressionParser::Parse( const char *szFileName, BOOL bTrace )
 }
 
 
+//---------------------------------------------------------------------
+// 튜토리얼 스크립트를 파싱한다.
+//---------------------------------------------------------------------
+BOOL CExpressionParser::Parse( BYTE *pFileMem, int nFileSize , BOOL bTrace )//bTrace=FALSE
+{
+	if( !m_pScan->LoadPackageFile(pFileMem, nFileSize) )
+		return FALSE;
+
+	m_Token = m_pScan->GetToken();
+	if( ENDFILE == m_Token )
+	{
+		m_pScan->Clear();
+		return FALSE;
+	}
+
+	if (VOUT == m_Token)
+	{
+		m_vector = assignVOut().v;
+		m_mat = assignMOut().m;
+	}
+	else if (MOUT == m_Token)
+	{
+		m_mat = assignMOut().m;
+		m_vector = assignVOut().v;
+	}
+
+
+	if( ENDFILE != m_Token )
+	{
+		SyntaxError( " code ends before file " );
+		PrintToken( m_Token, m_pScan->GetTokenStringQ(0) );
+		m_pScan->Clear();
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+
 //	assignVOut -> VOut = exp
 sExpr CExpressionParser::assignVOut()
 {

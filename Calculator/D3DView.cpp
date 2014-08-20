@@ -196,3 +196,11 @@ void CD3DView::OnMButtonDown(UINT nFlags, CPoint point)
 	m_MButtonDown = true;
 	CWnd::OnMButtonDown(nFlags, point);
 }
+
+
+void CD3DView::ParseSource( const string &source )
+{
+	parser::CExpressionParser ps;
+	ps.Parse((BYTE*)source.c_str(), source.length() );
+	m_cube.SetTransform( ps.m_mat );
+}

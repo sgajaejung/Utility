@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "afxwin.h"
 
 
 // CCalculatorDlg 대화 상자
@@ -39,4 +40,7 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	CEdit m_EditSource;
+	afx_msg void OnBnClickedButtonApply();
+	CButton m_applyButton;
 };

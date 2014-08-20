@@ -31,6 +31,8 @@ CCalculatorDlg::~CCalculatorDlg()
 void CCalculatorDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT_SOURCE, m_EditSource);
+	DDX_Control(pDX, IDC_BUTTON_APPLY, m_applyButton);
 }
 
 BEGIN_MESSAGE_MAP(CCalculatorDlg, CDialogEx)
@@ -39,6 +41,7 @@ BEGIN_MESSAGE_MAP(CCalculatorDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDOK, &CCalculatorDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CCalculatorDlg::OnBnClickedCancel)
+	ON_BN_CLICKED(IDC_BUTTON_APPLY, &CCalculatorDlg::OnBnClickedButtonApply)
 END_MESSAGE_MAP()
 
 
@@ -80,7 +83,7 @@ BOOL CCalculatorDlg::OnInitDialog()
 	// Create Main Model View
 	m_view = new CD3DView();
 	m_view->Create(NULL, _T("CView"), WS_CHILDWINDOW, 
-		CRect(0,25, VIEW_WIDTH, VIEW_HEIGHT+25), this, 0);
+		CRect(0,0, VIEW_WIDTH, VIEW_HEIGHT), this, 0);
 
 	// Create Direct
 	graphic::cRenderer::Get()->CreateDirectX(
@@ -88,6 +91,16 @@ BOOL CCalculatorDlg::OnInitDialog()
 	
 	m_view->Init();
 	m_view->ShowWindow(SW_SHOW);
+
+	m_EditSource.MoveWindow(CRect(0,REAL_WINDOW_HEIGHT-135,REAL_WINDOW_WIDTH, REAL_WINDOW_HEIGHT));
+	m_applyButton.MoveWindow(CRect(REAL_WINDOW_WIDTH-200,REAL_WINDOW_HEIGHT-155,
+		REAL_WINDOW_WIDTH, REAL_WINDOW_HEIGHT-135));
+
+	CString source = L"// T(x,y,z), S(sx,sy,sz), Rx(angle), Ry(angle), Rz(angle) \r\n\
+VOut = V(100,0,100) \r\n\
+MOut = T(0,50,0) * S(1,2,1) * Rx(0.2) * Ry(0.6)";
+
+	m_EditSource.SetWindowText( source );
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -181,4 +194,13 @@ void CCalculatorDlg::OnBnClickedCancel()
 {
 	m_loop = false;
 	CDialogEx::OnCancel();
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonApply()
+{
+	CString wstr;
+	m_EditSource.GetWindowText(wstr);
+	string str = wstr2str((wstring)wstr);
+	m_view->ParseSource(str);
 }

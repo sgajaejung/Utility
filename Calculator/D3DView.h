@@ -13,6 +13,7 @@ public:
 	bool Init();
 	void Render();
 	void Update(float elapseT);
+	void ParseSource( const string &source );
 
 
 protected:
