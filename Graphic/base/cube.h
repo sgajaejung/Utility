@@ -1,3 +1,5 @@
+// 정육면체를 표현하는 클래스.
+// Vertext + Diffuse 로 표현된다.
 #pragma once
 
 
@@ -17,7 +19,7 @@ namespace graphic
 		const Vector3& GetMin() const;
 		const Vector3& GetMax() const;
 
-		void Render(const Matrix44 &tm);
+		void Render(const Matrix44 &tm, bool fillRender=false);
 
 
 	protected:

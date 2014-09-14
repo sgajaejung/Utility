@@ -13,7 +13,6 @@ namespace parser
 		CExpressionParser();
 		virtual ~CExpressionParser();
 
-		sRmi* Parse( const char *szFileName, BOOL bTrace=FALSE );
 		BOOL Parse( BYTE *pFileMem, int nFileSize , BOOL bTrace=FALSE );
 		BOOL IsError() { return m_bError; }
 		void Clear();
@@ -57,7 +56,6 @@ namespace parser
 
 	private:
 		CExpressionScanner *m_pScan;
-		sRmi	 *m_pRmiList;
 		char m_FileName[ MAX_PATH];
 		Tokentype m_Token;
 		BOOL m_bTrace;

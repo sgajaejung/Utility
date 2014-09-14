@@ -32,35 +32,6 @@ namespace parser
 	enum eCONDITION_OP { OP_NONE, OP_AND, OP_OR, OP_NEG, OP_LT, OP_RT, OP_LTEQ, OP_RTEQ, OP_EQ, OP_NEQ };
 
 
-	typedef struct _sTypeVar
-	{
-		std::string type;
-		std::string var;
-
-	} sTypeVar;
-
-	typedef struct _sArg
-	{
-		sTypeVar *var;
-		_sArg *next;
-	} sArg;
-
-	typedef struct _sProtocol
-	{
-		std::string name;
-		sArg *argList;
-		_sProtocol *next;
-	} sProtocol;
-
-	typedef struct _sRmi
-	{
-		std::string name;
-		int number;
-		sProtocol *protocol;
-		_sRmi *next;
-	} sRmi;
-
-
 	struct sExpr
 	{
 		int type; // 0=matrix, 1=vector, 2=scalar
@@ -80,9 +51,6 @@ namespace parser
 	void PrintToken( Tokentype token, char *szTokenString );
 
 	_variant_t	GetTypeStr2Type(const std::string &typeStr); // sArg->var->type
-	//_variant_t	String2Variant(const std::string &valueType, const std::string &value);
-	//int			GetPacketID(sRmi *rmi, sProtocol *packet);
-	//std::string Packet2String(const CPacket &packet, sProtocol *protocol);
 
 }
 

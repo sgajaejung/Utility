@@ -92,9 +92,9 @@ BOOL CCalculatorDlg::OnInitDialog()
 	m_view->Init();
 	m_view->ShowWindow(SW_SHOW);
 
-	m_EditSource.MoveWindow(CRect(0,REAL_WINDOW_HEIGHT-135,REAL_WINDOW_WIDTH, REAL_WINDOW_HEIGHT));
+	m_EditSource.MoveWindow(CRect(0,REAL_WINDOW_HEIGHT-135,REAL_WINDOW_WIDTH-20, REAL_WINDOW_HEIGHT));
 	m_applyButton.MoveWindow(CRect(REAL_WINDOW_WIDTH-200,REAL_WINDOW_HEIGHT-155,
-		REAL_WINDOW_WIDTH, REAL_WINDOW_HEIGHT-135));
+		REAL_WINDOW_WIDTH-20, REAL_WINDOW_HEIGHT-135));
 
 	CString source = L"// T(x,y,z), S(sx,sy,sz), Rx(angle), Ry(angle), Rz(angle) \r\n\
 VOut = V(100,0,100) \r\n\

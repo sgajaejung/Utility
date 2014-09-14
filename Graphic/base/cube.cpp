@@ -120,7 +120,7 @@ void cCube::SetColor( DWORD color )
 }
 
 
-void cCube::Render(const Matrix44 &tm)
+void cCube::Render(const Matrix44 &tm, bool fillRender)
 {
 	DWORD cullMode;
 	DWORD fillMode;

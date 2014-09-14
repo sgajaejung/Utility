@@ -5,6 +5,7 @@
 
 using namespace common;
 
+const Matrix44 Matrix44::Identity;
 
 Matrix44::Matrix44()
 {
@@ -180,7 +181,7 @@ void Matrix44::SetProjection(	const float fov, const float aspect, const float n
 Quaternion Matrix44::GetQuaternion() const
 {
 	Quaternion q;
-
+/*
 	float fTr = _11 + _22 + _33 + _44;
 
 	if( fTr >= 1.0F )	// w >= 0.5
@@ -213,6 +214,10 @@ Quaternion Matrix44::GetQuaternion() const
 		q.z = v[2];
 		q.w = ( m[k][j] - m[j][k] ) / ( 2.0F * s );
 	}
+/**/
+	
+	Vector3 s, t;
+	D3DXMatrixDecompose((D3DXVECTOR3*)&s, (D3DXQUATERNION*)&q, (D3DXVECTOR3*)&t, (D3DXMATRIX*)this);
 
 	return q;
 }
@@ -525,3 +530,4 @@ void Matrix44::Transpose()
 	m._44 = _44;
 	*this = m;
 }
+

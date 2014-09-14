@@ -2,13 +2,12 @@
 //
 
 #include "stdafx.h"
-#include "Calculator.h"
 #include "D3DView.h"
-#include "parser/ExpressionParser.h"
+#include "Controller.h"
 
 
 // CD3DView
-CD3DView::CD3DView() :
+CD3DView::CD3DView():
 	m_LButtonDown(false),
 	m_RButtonDown(false),
 	m_MButtonDown(false)
@@ -20,19 +19,42 @@ CD3DView::~CD3DView()
 {
 }
 
-
-BEGIN_MESSAGE_MAP(CD3DView, CWnd)
+BEGIN_MESSAGE_MAP(CD3DView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
-	ON_WM_MOUSEMOVE()
+	ON_WM_MBUTTONDOWN()
+	ON_WM_MBUTTONUP()
+	ON_WM_MOUSEWHEEL()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
-	ON_WM_KEYDOWN()
-	ON_WM_MOUSEWHEEL()
-	ON_WM_MBUTTONUP()
-	ON_WM_MBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
+
+// CD3DView 그리기입니다.
+
+void CD3DView::OnDraw(CDC* pDC)
+{
+	CDocument* pDoc = GetDocument();
+	// TODO: 여기에 그리기 코드를 추가합니다.
+}
+
+
+// CD3DView 진단입니다.
+
+#ifdef _DEBUG
+void CD3DView::AssertValid() const
+{
+	CView::AssertValid();
+}
+
+#ifndef _WIN32_WCE
+void CD3DView::Dump(CDumpContext& dc) const
+{
+	CView::Dump(dc);
+}
+#endif
+#endif //_DEBUG
 
 
 // CD3DView 메시지 처리기입니다.
@@ -42,8 +64,6 @@ bool CD3DView::Init()
 {
 	m_camera.SetCamera(Vector3(100,100,-500), Vector3(0,0,0), Vector3(0,1,0));
 	m_camera.SetProjection( D3DX_PI / 4.f, (float)VIEW_WIDTH / (float) VIEW_HEIGHT, 1.f, 10000.0f);
-
-	m_cube.SetCube(Vector3(-10,-10,-10), Vector3(10,10,10));
 
 	SetFocus();
 	return true;
@@ -68,9 +88,7 @@ void CD3DView::Render()
 		graphic::GetRenderer()->RenderGrid();
 		graphic::GetRenderer()->RenderAxis();
 
-		Matrix44 matIdentity;
-		m_cube.Render(matIdentity);
-
+		cController::Get()->Render();
 
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
@@ -84,21 +102,23 @@ void CD3DView::Render()
 void CD3DView::Update(float elapseT)
 {
 	graphic::GetRenderer()->Update(elapseT);
-
+	cController::Get()->Update(elapseT);
 }
+
+
 
 
 void CD3DView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	SetFocus();
-	CWnd::OnLButtonDown(nFlags, point);
+	CView::OnLButtonDown(nFlags, point);
 }
 
 
 void CD3DView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 
-	CWnd::OnLButtonUp(nFlags, point);
+	CView::OnLButtonUp(nFlags, point);
 }
 
 
@@ -129,7 +149,7 @@ void CD3DView::OnMouseMove(UINT nFlags, CPoint point)
 		m_curPos = point;
 	}
 
-	CWnd::OnMouseMove(nFlags, point);
+	CView::OnMouseMove(nFlags, point);
 }
 
 
@@ -139,7 +159,7 @@ void CD3DView::OnRButtonDown(UINT nFlags, CPoint point)
 	SetCapture();
 	m_RButtonDown = true;
 	m_curPos = point;
-	CWnd::OnRButtonDown(nFlags, point);
+	CView::OnRButtonDown(nFlags, point);
 }
 
 
@@ -147,7 +167,7 @@ void CD3DView::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	ReleaseCapture();
 	m_RButtonDown = false;
-	CWnd::OnRButtonUp(nFlags, point);
+	CView::OnRButtonUp(nFlags, point);
 }
 
 
@@ -160,7 +180,7 @@ BOOL CD3DView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	m_camera.Zoom( (zDelta<0)? -zoomLen : zoomLen );	
 
-	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
+	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 
@@ -168,7 +188,7 @@ void CD3DView::OnMButtonUp(UINT nFlags, CPoint point)
 {
 	m_MButtonDown = false;
 	ReleaseCapture();
-	CWnd::OnMButtonUp(nFlags, point);
+	CView::OnMButtonUp(nFlags, point);
 }
 
 
@@ -177,19 +197,5 @@ void CD3DView::OnMButtonDown(UINT nFlags, CPoint point)
 	SetFocus();
 	SetCapture();
 	m_MButtonDown = true;
-	CWnd::OnMButtonDown(nFlags, point);
-}
-
-
-void CD3DView::ParseSource( const string &source )
-{
-	parser::CExpressionParser ps;
-	ps.Parse((BYTE*)source.c_str(), source.length() );
-	m_cube.SetTransform( ps.m_mat );
-}
-
-
-void CD3DView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+	CView::OnMButtonDown(nFlags, point);
 }
