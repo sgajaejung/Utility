@@ -24,6 +24,8 @@ protected:
 
 private:
 	graphic::cCube2 m_cube;
+	graphic::cGrid2 m_grid;
+
 	vector<graphic::cLight> m_lights;
 };
 

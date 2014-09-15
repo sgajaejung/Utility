@@ -48,7 +48,7 @@ void cMaterial::Init(const sMaterial &mtrl)
 
 void cMaterial::InitWhite()
 {
-	Init(Vector4(1,1,1,1), Vector4(1,1,1,1), Vector4(1,1,1,1));
+	Init(Vector4(0,0,0,1), Vector4(1,1,1,1), Vector4(1,1,1,1));
 }
 
 
@@ -60,13 +60,13 @@ void cMaterial::InitBlack()
 
 void cMaterial::InitRed()
 {
-	Init(Vector4(1,0,0,1), Vector4(1,0,0,1), Vector4(1,0,0,1));
+	Init(Vector4(0,0,0,1), Vector4(1,0,0,1), Vector4(1,0,0,1));
 }
 
 
 void cMaterial::InitBlue()
 {
-	Init(Vector4(0,0,1,1), Vector4(0,0,1,1), Vector4(0,0,1,1));
+	Init(Vector4(0,0,0,1), Vector4(0,0,1,1), Vector4(0,0,1,1));
 }
 
 
