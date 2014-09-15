@@ -66,6 +66,9 @@ bool CD3DView::Init()
 	m_camera.SetCamera(Vector3(100,100,-500), Vector3(0,0,0), Vector3(0,1,0));
 	m_camera.SetProjection( D3DX_PI / 4.f, (float)VIEW_WIDTH / (float) VIEW_HEIGHT, 1.f, 10000.0f);
 
+	m_lineMtrl.InitBlack();
+	m_lineMtrl.GetMtrl().Emissive = *(D3DXCOLOR*)&Vector4(1,1,0,1);
+
 	SetFocus();
 	return true;
 }
@@ -91,6 +94,12 @@ void CD3DView::Render()
 
 		cController::Get()->Render();
 
+		if (m_LButtonDown)
+		{
+			m_lineMtrl.Bind();
+			m_lightLine.Render();
+		}
+
 		//랜더링 끝
 		graphic::GetDevice()->EndScene();
 		//랜더링이 끝났으면 랜더링된 내용 화면으로 전송
@@ -112,25 +121,41 @@ void CD3DView::Update(float elapseT)
 void CD3DView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	SetFocus();
+	m_LButtonDown = true;
+	m_curPos = point;
 	CView::OnLButtonDown(nFlags, point);
 }
 
 
 void CD3DView::OnLButtonUp(UINT nFlags, CPoint point)
 {
-
+	m_LButtonDown = false;
 	CView::OnLButtonUp(nFlags, point);
 }
 
 
 void CD3DView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if (m_RButtonDown)
+	if (m_LButtonDown)
+	{
+		Ray ray(point.x, point.y, 800, 600, m_camera.GetProjectionMatrix(), m_camera.GetViewMatrix());
+		Vector3 pickPos;
+		if (cController::Get()->GetGrid().Pick( ray.orig, ray.dir, pickPos ))
+		{
+			const Vector3 lightPos = *(Vector3*)&cController::Get()->GetSelectLight().m_light.Position;
+			Vector3 dir = pickPos - lightPos;
+			dir.Normalize();
+			cController::Get()->GetSelectLight().m_light.Direction = *(D3DXVECTOR3*)&dir;
+
+			m_lightLine.SetLine(lightPos, pickPos, 1);
+		}
+	}
+	else if (m_RButtonDown)
 	{
 		CPoint pos = point - m_curPos;
 		m_curPos = point;
-		m_camera.Pitch2(pos.y * -0.005f); 
-		m_camera.Yaw2(pos.x * -0.005f); 
+		m_camera.Pitch2(pos.y * 0.005f); 
+		m_camera.Yaw2(pos.x * 0.005f); 
 	}
 	else if (m_MButtonDown)
 	{

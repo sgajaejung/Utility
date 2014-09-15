@@ -12,7 +12,7 @@ cController::cController()
 	m_lights.resize(3);
 
 	m_lights[ 0].Init(cLight::LIGHT_DIRECTIONAL);
-	m_lights[ 0].SetPosition(Vector3(0,100,0));
+	m_lights[ 0].SetPosition(Vector3(0,300,0));
 	m_lights[ 0].m_light.Range = 200;
 
 	m_lights[ 1].Init(cLight::LIGHT_POINT);
@@ -24,8 +24,13 @@ cController::cController()
 	
 	m_lights[ 2].Init(cLight::LIGHT_SPOT);
 	m_lights[ 2].SetPosition(Vector3(0,100,0));
-
-
+	m_lights[ 2].m_light.Range = 500;
+	m_lights[ 2].m_light.Falloff = 1.f;
+	m_lights[ 2].m_light.Theta = 1.25f;
+	m_lights[ 2].m_light.Phi = 3.14f;
+	m_lights[ 2].m_light.Attenuation0 = 0;
+	m_lights[ 2].m_light.Attenuation1 = 0.006f;
+	m_lights[ 2].m_light.Attenuation2 = 0;
 }
 
 cController::~cController()
@@ -64,12 +69,9 @@ void cController::Render()
 	m_lights[ m_selectLight].Bind(0);
 
 	m_cube.Render(Matrix44::Identity);
-	
-	if (D3DLIGHT_DIRECTIONAL != m_lights[ m_selectLight].m_light.Type)
-	{
-		m_sphereMtrl.Bind();
-		m_sphere.Render(Matrix44::Identity);
-	}
+
+	m_sphereMtrl.Bind();
+	m_sphere.Render(Matrix44::Identity);
 	
 	GetDevice()->SetTransform( D3DTS_WORLD, (D3DXMATRIX*)&Matrix44::Identity);
 	m_grid.Render();

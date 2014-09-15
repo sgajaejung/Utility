@@ -16,6 +16,8 @@ public:
 
 protected:
 	graphic::cCamera m_camera;
+	graphic::cLine m_lightLine;
+	graphic::cMaterial m_lineMtrl;
 
 	CPoint m_curPos;
 	bool m_LButtonDown;

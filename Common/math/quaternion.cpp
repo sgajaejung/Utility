@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include "Math.h"
-//#include <D3dx9math.h>
+#include <D3dx9math.h>
 
 using namespace common;
 
@@ -94,7 +94,7 @@ Quaternion Quaternion::Interpolate( const Quaternion& qNext, const float fTime )
 Matrix44 Quaternion::GetMatrix() const
 {
 	Matrix44 m;
-
+	/*
 	float	xx = x * x;
 	float	yy = y * y;
 	float	zz = z * z;
@@ -123,7 +123,7 @@ Matrix44 Quaternion::GetMatrix() const
 	m._44 = 1.0F;
 /**/
 
-	//D3DXMatrixRotationQuaternion( (D3DXMATRIX*)&m, (D3DXQUATERNION*)this );
+	D3DXMatrixRotationQuaternion( (D3DXMATRIX*)&m, (D3DXQUATERNION*)this );
 	return m;
 } //Quaternion::GetMatrix4
 

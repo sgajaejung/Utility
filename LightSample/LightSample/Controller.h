@@ -13,14 +13,13 @@ public:
 	void SelectLight(const int lightIndex);
 	vector<graphic::cLight>& GetLights();
 	graphic::cLight& GetLight(const int index);
+	graphic::cLight& GetSelectLight();
 	graphic::cCube2& GetCube();
+	graphic::cGrid2& GetGrid();
 
 	void Init();
 	void Render();
 	void Update(const float elapseTime);
-
-
-protected:
 
 
 private:
@@ -38,3 +37,5 @@ inline vector<graphic::cLight>& cController::GetLights() { return m_lights; }
 inline graphic::cLight& cController::GetLight(const int index) { return m_lights[ index]; }
 inline graphic::cCube2& cController::GetCube() { return m_cube; }
 inline void cController::SelectLight(const int lightIndex) { m_selectLight = lightIndex; }
+inline graphic::cGrid2& cController::GetGrid() { return m_grid; }
+inline graphic::cLight& cController::GetSelectLight() { return m_lights[ m_selectLight]; }

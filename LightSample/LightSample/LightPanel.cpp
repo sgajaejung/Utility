@@ -153,12 +153,12 @@ void CLightPanel::UpdateLightProperty(const cLight &light)
 
 	//pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Range"), light.m_light.Range, L""));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Range"), light.m_light.Range, L"", 0, 500, 1000) );
-	pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Falloff"), light.m_light.Falloff, L""));
+	pGroup1->AddSubItem(new CPropGridSlider(_T("Falloff"), light.m_light.Falloff, L"", 0, 2, 1000));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation0"), light.m_light.Attenuation0, L"", 0, 1.f, 1000));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation1"), light.m_light.Attenuation1, L"", 0, 0.1f, 1000));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation2"), light.m_light.Attenuation2, L"", 0, 0.1f, 1000));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Theta"), light.m_light.Theta, L"", 0, 3.14f, 100));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Phi"), light.m_light.Phi, L"", 0, 1, 100) );
+	pGroup1->AddSubItem(new CPropGridSlider(_T("Phi"), light.m_light.Phi, L"", 0, 3.14f, 100) );
 
 	pGroup1->AdjustButtonRect();
 	pGroup1->AllowEdit();
