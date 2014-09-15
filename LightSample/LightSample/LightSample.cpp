@@ -1,5 +1,7 @@
-
-// LightSample.cpp : 응용 프로그램에 대한 클래스 동작을 정의합니다.
+//
+//
+//  도움 받은 사이트
+// http://www.directxtutorial.com/Lesson.aspx?lessonid=9-4-9
 //
 
 #include "stdafx.h"
