@@ -37,6 +37,7 @@ protected:
 	float m_fMin, m_fMax;
 	int m_iSliderStep;
 	int m_iEditCtrlWidth;
+	bool m_isSliderEdit;
 
 public:
 	CPropGridSlider(CString name, float val, CString tip, float min, float max, int step, int edit_ctrl_width=-2 ) :
@@ -46,6 +47,7 @@ public:
 		m_iSliderStep = step;
 		m_pSlider = NULL;
 		m_iEditCtrlWidth = edit_ctrl_width;
+		m_isSliderEdit = false;
 	}
 	virtual ~CPropGridSlider() {
 		if (m_pSlider) delete m_pSlider;

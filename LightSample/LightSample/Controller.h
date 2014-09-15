@@ -10,6 +10,7 @@ public:
 	cController();
 	virtual ~cController();
 
+	void SelectLight(const int lightIndex);
 	vector<graphic::cLight>& GetLights();
 	graphic::cLight& GetLight(const int index);
 	graphic::cCube2& GetCube();
@@ -25,7 +26,10 @@ protected:
 private:
 	graphic::cCube2 m_cube;
 	graphic::cGrid2 m_grid;
+	graphic::cSphere m_sphere;
+	graphic::cMaterial m_sphereMtrl;
 
+	int m_selectLight;
 	vector<graphic::cLight> m_lights;
 };
 
@@ -33,3 +37,4 @@ private:
 inline vector<graphic::cLight>& cController::GetLights() { return m_lights; }
 inline graphic::cLight& cController::GetLight(const int index) { return m_lights[ index]; }
 inline graphic::cCube2& cController::GetCube() { return m_cube; }
+inline void cController::SelectLight(const int lightIndex) { m_selectLight = lightIndex; }

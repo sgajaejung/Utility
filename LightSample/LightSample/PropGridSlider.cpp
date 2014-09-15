@@ -29,7 +29,10 @@ void CPropSlider::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CPropSlider::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (nFlags == 1)
+	{
+		SetFocus();
 		OnUpdateValue();
+	}
 	CSliderCtrl::OnMouseMove(nFlags, point);
 }
 
@@ -47,6 +50,7 @@ void CPropSlider::OnUpdateValue()
 	if (pos != m_iPrevPos) {
 		m_iPrevPos = pos;
 		m_pParentProp->OnSliderPosChanged();
+		SetFocus();
 	}
 }
 
@@ -72,8 +76,11 @@ void CPropGridSlider::OnSliderPosChanged()
 	int pos = m_pSlider->GetPos();
 	float ratio = ((float)pos) / ((float)m_iSliderStep);
 	float value = (m_fMax - m_fMin) * ratio + m_fMin;
+
+	m_isSliderEdit = true;
 	SetValue((float)value);
 	m_pWndList->OnPropertyChanged(this);
+	m_isSliderEdit = false;
 }
 
 void CPropGridSlider::SetSliderPos()
@@ -88,6 +95,9 @@ void CPropGridSlider::SetSliderPos()
 
 BOOL CPropGridSlider::OnEndEdit() 
 {
+	if (m_isSliderEdit)
+		return CMFCPropertyGridProperty::OnEndEdit();
+
 	SetSliderPos();
 	return CMFCPropertyGridProperty::OnEndEdit();
 }

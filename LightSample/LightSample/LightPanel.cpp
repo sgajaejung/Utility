@@ -38,6 +38,7 @@ BEGIN_MESSAGE_MAP(CLightPanel, CDialogEx)
 	ON_BN_CLICKED(IDCANCEL, &CLightPanel::OnBnClickedCancel)
 	ON_CBN_SELCHANGE(IDC_COMBO_LIGHT, &CLightPanel::OnSelchangeComboLight)
 	ON_REGISTERED_MESSAGE (AFX_WM_PROPERTY_CHANGED, OnPropertyChanged) 
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -147,14 +148,15 @@ void CLightPanel::UpdateLightProperty(const cLight &light)
 	AddPropertyColor4(pGroup1, L"Specular", *(Vector4*)&light.m_light.Specular);
 	AddPropertyColor4(pGroup1, L"Ambient", *(Vector4*)&light.m_light.Ambient);
 	AddPropertyVector3(pGroup1, L"Position", *(Vector3*)&light.m_light.Position);
-	AddPropertyVector3(pGroup1, L"Direction", *(Vector3*)&light.m_light.Direction);
+	AddPropertyVector3(pGroup1, L"Direction", *(Vector3*)&light.m_light.Direction,
+		-1, 1, 100);
 
 	//pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Range"), light.m_light.Range, L""));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Range"), light.m_light.Range, L"", 0, 500, 1000) );
 	pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Falloff"), light.m_light.Falloff, L""));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation0"), light.m_light.Attenuation0, L"", 0, 1, 1000));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation1"), light.m_light.Attenuation1, L"", 0, 1, 1000));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation2"), light.m_light.Attenuation2, L"", 0, 1, 1000));
+	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation0"), light.m_light.Attenuation0, L"", 0, 1.f, 1000));
+	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation1"), light.m_light.Attenuation1, L"", 0, 0.1f, 1000));
+	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation2"), light.m_light.Attenuation2, L"", 0, 0.1f, 1000));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Theta"), light.m_light.Theta, L"", 0, 3.14f, 100));
 	pGroup1->AddSubItem(new CPropGridSlider(_T("Phi"), light.m_light.Phi, L"", 0, 1, 100) );
 
@@ -174,16 +176,16 @@ void CLightPanel::AddPropertyColor4(CMFCPropertyGridProperty *group, CString nam
 	CMFCPropertyGridProperty *pProp;
 
 	CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(name, 0, TRUE);
-	pProp = new CMFCPropertyGridProperty(_T("r"), (_variant_t)value.x, L"");
+	pProp = new CPropGridSlider(_T("r"), (_variant_t)value.x, L"", 0, 1, 100);
 	pSize->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( _T("g"), (_variant_t)value.y, L"");
+	pProp = new CPropGridSlider( _T("g"), (_variant_t)value.y, L"", 0, 1, 100);
 	pSize->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( _T("b"), (_variant_t)value.z, L"");
+	pProp = new CPropGridSlider( _T("b"), (_variant_t)value.z, L"", 0, 1, 100);
 	pSize->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( _T("a"), (_variant_t)value.w, L"");
+	pProp = new CPropGridSlider( _T("a"), (_variant_t)value.w, L"", 0, 1, 100);
 	pSize->AddSubItem(pProp);
 
 	group->AddSubItem(pSize);
@@ -191,18 +193,18 @@ void CLightPanel::AddPropertyColor4(CMFCPropertyGridProperty *group, CString nam
 
 
 void CLightPanel::AddPropertyVector3(CMFCPropertyGridProperty *group, CString name, 
-	Vector3 value)
+	Vector3 value, const float _min, const float _max, const int slice)
 {
 	CMFCPropertyGridProperty *pProp;
 
 	CMFCPropertyGridProperty* pSize = new CMFCPropertyGridProperty(name, 0, TRUE);
-	pProp = new CMFCPropertyGridProperty(_T("x"), (_variant_t)value.x, L"");
+	pProp = new CPropGridSlider(_T("x"), (_variant_t)value.x, L"", _min, _max, slice);
 	pSize->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( _T("y"), (_variant_t)value.y, L"");
+	pProp = new CPropGridSlider( _T("y"), (_variant_t)value.y, L"", _min, _max, slice);
 	pSize->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( _T("z"), (_variant_t)value.z, L"");
+	pProp = new CPropGridSlider( _T("z"), (_variant_t)value.z, L"", _min, _max, slice);
 	pSize->AddSubItem(pProp);
 
 	group->AddSubItem(pSize);
@@ -213,6 +215,7 @@ void CLightPanel::OnSelchangeComboLight()
 {
 	const int select = m_lightCombo.GetCurSel();
 	UpdateLightProperty(cController::Get()->GetLight(select));
+	cController::Get()->SelectLight(select);
 }
 
 
@@ -411,4 +414,25 @@ Vector3 CLightPanel::GetPropertyVector3(CMFCPropertyGridProperty *group)
 	_variant_t z = propZ->GetValue();
 
 	return Vector3(x, y, z);
+}
+
+
+void CLightPanel::MoveChildCtrlWindow(CWnd &wndCtrl, int cx, int cy)
+{
+	if (wndCtrl.GetSafeHwnd())
+	{
+		CRect wr;
+		wndCtrl.GetWindowRect(wr);
+		ScreenToClient(wr);
+		wndCtrl.MoveWindow(wr.left, wr.top, cx, wr.Height());
+	}
+}
+
+
+void CLightPanel::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	MoveChildCtrlWindow(m_modelProperty, cx, cy);
+	MoveChildCtrlWindow(m_lightProperty, cx, cy);	
 }

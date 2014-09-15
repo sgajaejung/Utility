@@ -29,9 +29,12 @@ protected:
 	void ChangeLightValue(CMFCPropertyGridProperty *prop);
 
 	void AddPropertyColor4(CMFCPropertyGridProperty *group, CString name, Vector4 value);
-	void AddPropertyVector3(CMFCPropertyGridProperty *group, CString name, Vector3 value);
+	void AddPropertyVector3(CMFCPropertyGridProperty *group, CString name, Vector3 value,
+		const float _min=0, const float _max=500, const int slice=10000);
 	Vector4 GetPropertyVector4(CMFCPropertyGridProperty *group);
 	Vector3 GetPropertyVector3(CMFCPropertyGridProperty *group);
+
+	void MoveChildCtrlWindow(CWnd &wndCtrl, int cx, int cy);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -45,4 +48,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSelchangeComboLight();
 	LRESULT OnPropertyChanged (WPARAM wparam, LPARAM lparam); 
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
