@@ -90,7 +90,8 @@ void CPropGridSlider::SetSliderPos()
 	float ratio = (fval - m_fMin) / (m_fMax - m_fMin);
 	int pos = (int)(ratio * ((float)m_iSliderStep));
 
-	m_pSlider->SetPos(pos);
+	if (m_pSlider)
+		m_pSlider->SetPos(pos);
 }
 
 BOOL CPropGridSlider::OnEndEdit() 

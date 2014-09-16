@@ -1,9 +1,10 @@
-// D3DView.cpp : 구현 파일입니다.
+//
+//  도움 받은 사이트
+// http://www.directxtutorial.com/Lesson.aspx?lessonid=9-4-9
 //
 
 #include "stdafx.h"
 #include "D3DView.h"
-#include "Controller.h"
 
 
 // CD3DView
@@ -89,8 +90,6 @@ void CD3DView::Render()
 		//화면 청소가 성공적으로 이루어 졌다면... 랜더링 시작
 		graphic::GetDevice()->BeginScene();
 		graphic::GetRenderer()->RenderFPS();
-		//graphic::GetRenderer()->RenderGrid();
-		//graphic::GetRenderer()->RenderAxis();
 
 		cController::Get()->Render();
 
@@ -116,11 +115,10 @@ void CD3DView::Update(float elapseT)
 }
 
 
-
-
 void CD3DView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	SetFocus();
+	SetCapture();
 	m_LButtonDown = true;
 	m_curPos = point;
 	CView::OnLButtonDown(nFlags, point);
@@ -129,6 +127,7 @@ void CD3DView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CD3DView::OnLButtonUp(UINT nFlags, CPoint point)
 {
+	ReleaseCapture();
 	m_LButtonDown = false;
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -145,9 +144,9 @@ void CD3DView::OnMouseMove(UINT nFlags, CPoint point)
 			const Vector3 lightPos = *(Vector3*)&cController::Get()->GetSelectLight().m_light.Position;
 			Vector3 dir = pickPos - lightPos;
 			dir.Normalize();
-			cController::Get()->GetSelectLight().m_light.Direction = *(D3DXVECTOR3*)&dir;
-
 			m_lightLine.SetLine(lightPos, pickPos, 1);
+
+			cController::Get()->UpdateLightDirection(dir);
 		}
 	}
 	else if (m_RButtonDown)
@@ -239,13 +238,13 @@ void CD3DView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			flag = !flag;
 		}
 		break;
-
-	case VK_ESCAPE:
-		{
-			
-		}
-		break;
 	}
 
 	CView::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+
+void CD3DView::Update(int type)
+{
+	// 아직 아무일도 없음.
 }

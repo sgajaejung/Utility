@@ -69,3 +69,4 @@ static const int VIEW_HEIGHT = 600;
 static const int REAL_WINDOW_WIDTH = VIEW_WIDTH+18;
 static const int REAL_WINDOW_HEIGHT = VIEW_HEIGHT+40;
 
+#include "Controller.h"

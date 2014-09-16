@@ -8,7 +8,6 @@
 #include "resource.h"		// 주 기호입니다.
 #include "D3DView.h"
 #include "TopPanel.h"
-#include "Controller.h"
 #include <MMSystem.h>
 
 

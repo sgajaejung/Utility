@@ -33,6 +33,8 @@ void CTopPanel::Init()
 	m_lightPanel->Create( CLightPanel::IDD, this );
 	m_lightPanel->MoveWindow(cr);
 	m_lightPanel->ShowWindow(SW_SHOW);
+
+	cController::Get()->AddObserver(m_lightPanel);
 }
 
 

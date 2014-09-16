@@ -1,10 +1,11 @@
-// LightPanel.cpp : 구현 파일입니다.
+//
+//  도움 받은 사이트
+// http://www.directxtutorial.com/Lesson.aspx?lessonid=9-4-9
 //
 
 #include "stdafx.h"
 #include "LightPanel.h"
 #include "afxdialogex.h"
-#include "Controller.h"
 #include "PropGridSlider.h"
 
 using namespace graphic;
@@ -106,15 +107,29 @@ void CLightPanel::UpdateModelProperty(const cMaterial &mtrl)
 {
 	m_modelProperty.RemoveAll();
 
-	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("Cube Property"));
+	CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Cube Property"));
 
-	AddPropertyColor4(pGroup1, L"Diffuse", *(Vector4*)&mtrl.m_mtrl.Diffuse);
-	AddPropertyColor4(pGroup1, L"Ambient", *(Vector4*)&mtrl.m_mtrl.Ambient);
-	AddPropertyColor4(pGroup1, L"Specular", *(Vector4*)&mtrl.m_mtrl.Specular);
-	AddPropertyColor4(pGroup1, L"Emissive", *(Vector4*)&mtrl.m_mtrl.Emissive);
-	pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Power"), mtrl.m_mtrl.Power, L""));
+	CString types[] = {
+		_T("Cube"),
+		_T("Sphere"),
+	};
+	CMFCPropertyGridProperty* typeProp = new CMFCPropertyGridProperty(_T("Model"),
+		types[ cController::Get()->GetSelectModel()] );
+	typeProp->AddOption(types[0]);
+	typeProp->AddOption(types[1]);
+	typeProp->AllowEdit(FALSE);
+	group->AddSubItem(typeProp);
 
-	m_modelProperty.AddProperty( pGroup1);
+	AddPropertyColor4(group, L"Diffuse", *(Vector4*)&mtrl.m_mtrl.Diffuse);
+	AddPropertyColor4(group, L"Ambient", *(Vector4*)&mtrl.m_mtrl.Ambient);
+	AddPropertyColor4(group, L"Specular", *(Vector4*)&mtrl.m_mtrl.Specular);
+	AddPropertyColor4(group, L"Emissive", *(Vector4*)&mtrl.m_mtrl.Emissive);
+	group->AddSubItem(new CPropGridSlider(_T("Power"), mtrl.m_mtrl.Power, L"", 0, 128, 100));
+
+	COleVariant varSpecular((short)VARIANT_TRUE, VT_BOOL);
+	group->AddSubItem(new CMFCPropertyGridProperty(_T("Specular Effect"), varSpecular, L""));
+
+	m_modelProperty.AddProperty( group);
 }
 
 
@@ -122,7 +137,7 @@ void CLightPanel::UpdateLightProperty(const cLight &light)
 {
 	m_lightProperty.RemoveAll();
 
-	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("Light Property"));
+	CMFCPropertyGridProperty* group = new CMFCPropertyGridProperty(_T("Light Property"));
 
 	// construct a COleVariant object. 
 	//COleVariant var3DLook((short)VARIANT_FALSE, VT_BOOL);
@@ -142,31 +157,30 @@ void CLightPanel::UpdateLightProperty(const cLight &light)
 	pProp->AddOption(types[2]);
 	pProp->AddOption(types[3]);
 	pProp->AllowEdit(FALSE);
-	pGroup1->AddSubItem(pProp);
+	group->AddSubItem(pProp);
 
-	AddPropertyColor4(pGroup1, L"Diffuse", *(Vector4*)&light.m_light.Diffuse);
-	AddPropertyColor4(pGroup1, L"Specular", *(Vector4*)&light.m_light.Specular);
-	AddPropertyColor4(pGroup1, L"Ambient", *(Vector4*)&light.m_light.Ambient);
-	AddPropertyVector3(pGroup1, L"Position", *(Vector3*)&light.m_light.Position);
-	AddPropertyVector3(pGroup1, L"Direction", *(Vector3*)&light.m_light.Direction,
+	AddPropertyColor4(group, L"Diffuse", *(Vector4*)&light.m_light.Diffuse);
+	AddPropertyColor4(group, L"Specular", *(Vector4*)&light.m_light.Specular);
+	AddPropertyColor4(group, L"Ambient", *(Vector4*)&light.m_light.Ambient);
+	AddPropertyVector3(group, L"Position", *(Vector3*)&light.m_light.Position);
+	AddPropertyVector3(group, L"Direction", *(Vector3*)&light.m_light.Direction,
 		-1, 1, 100);
 
-	//pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Range"), light.m_light.Range, L""));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Range"), light.m_light.Range, L"", 0, 500, 1000) );
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Falloff"), light.m_light.Falloff, L"", 0, 2, 1000));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation0"), light.m_light.Attenuation0, L"", 0, 1.f, 1000));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation1"), light.m_light.Attenuation1, L"", 0, 0.1f, 1000));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Attenuation2"), light.m_light.Attenuation2, L"", 0, 0.1f, 1000));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Theta"), light.m_light.Theta, L"", 0, 3.14f, 100));
-	pGroup1->AddSubItem(new CPropGridSlider(_T("Phi"), light.m_light.Phi, L"", 0, 3.14f, 100) );
+	group->AddSubItem(new CPropGridSlider(_T("Range"), light.m_light.Range, L"", 0, 500, 1000) );
+	group->AddSubItem(new CPropGridSlider(_T("Falloff"), light.m_light.Falloff, L"", 0, 2, 1000));
+	group->AddSubItem(new CPropGridSlider(_T("Attenuation0"), light.m_light.Attenuation0, L"", 0, 1.f, 1000));
+	group->AddSubItem(new CPropGridSlider(_T("Attenuation1"), light.m_light.Attenuation1, L"", 0, 0.1f, 1000));
+	group->AddSubItem(new CPropGridSlider(_T("Attenuation2"), light.m_light.Attenuation2, L"", 0, 0.1f, 1000));
+	group->AddSubItem(new CPropGridSlider(_T("Theta"), light.m_light.Theta, L"", 0, 3.14f, 100));
+	group->AddSubItem(new CPropGridSlider(_T("Phi"), light.m_light.Phi, L"", 0, 3.14f, 100) );
 
-	pGroup1->AdjustButtonRect();
-	pGroup1->AllowEdit();
-	pGroup1->Enable();
-	pGroup1->Show();
-	pGroup1->Redraw();
+	group->AdjustButtonRect();
+	group->AllowEdit();
+	group->Enable();
+	group->Show();
+	group->Redraw();
 
-	m_lightProperty.AddProperty( pGroup1);
+	m_lightProperty.AddProperty( group);
 }
 
 
@@ -273,31 +287,57 @@ void CLightPanel::ChangeMaterialValue(CMFCPropertyGridProperty *prop)
 	RET(!prop);
 
 	cCube2 &cube = cController::Get()->GetCube();
+	cSphere &sphere = cController::Get()->GetSphere();
+	cMaterial &material = (cController::Get()->GetSelectModel()==0)? 
+		cube.GetMaterial() : sphere.GetMaterial();
 
-	if (CString(L"Power") == prop->GetName())
+	if (CString(L"Model") == prop->GetName())
 	{
 		const _variant_t value = prop->GetValue();
-		cube.GetMaterial().m_mtrl.Power = value;
+		CString type = value;
+		for (int i=0; i < prop->GetOptionCount(); ++i)
+		{
+			if (prop->GetOption(i) == type)
+			{
+				cController::Get()->SetSelectModel(i);
+				switch (i)
+				{
+				case 0: UpdateModelProperty(cube.GetMaterial()); break;
+				case 1: UpdateModelProperty(sphere.GetMaterial()); break;
+				}
+				break;
+			}
+		}
+	}
+	else if (CString(L"Power") == prop->GetName())
+	{
+		const _variant_t value = prop->GetValue();
+		material.m_mtrl.Power = value;
 	}
 	else if (CString(L"Diffuse") == prop->GetName())
 	{
 		const Vector4 value= GetPropertyVector4(prop);
-		cube.GetMaterial().m_mtrl.Diffuse = *(D3DXCOLOR*)&value;
+		material.m_mtrl.Diffuse = *(D3DXCOLOR*)&value;
 	}
 	else if (CString(L"Ambient") == prop->GetName())
 	{
 		const Vector4 value = GetPropertyVector4(prop);
-		cube.GetMaterial().m_mtrl.Ambient = *(D3DXCOLOR*)&value;
+		material.m_mtrl.Ambient = *(D3DXCOLOR*)&value;
 	}
 	else if (CString(L"Specular") == prop->GetName())
 	{
 		const Vector4 value = GetPropertyVector4(prop);
-		cube.GetMaterial().m_mtrl.Specular = *(D3DXCOLOR*)&value;
+		material.m_mtrl.Specular = *(D3DXCOLOR*)&value;
 	}
 	else if (CString(L"Emissive") == prop->GetName())
 	{
 		const Vector4 value = GetPropertyVector4(prop);
-		cube.GetMaterial().m_mtrl.Emissive = *(D3DXCOLOR*)&value;
+		material.m_mtrl.Emissive = *(D3DXCOLOR*)&value;
+	}
+	else if (CString(L"Specular Effect") == prop->GetName())
+	{
+		_variant_t value = prop->GetValue();
+		cController::Get()->EnableSpecularEffect(value);
 	}
 }
 
@@ -435,4 +475,32 @@ void CLightPanel::OnSize(UINT nType, int cx, int cy)
 
 	MoveChildCtrlWindow(m_modelProperty, cx, cy);
 	MoveChildCtrlWindow(m_lightProperty, cx, cy);	
+}
+
+
+void CLightPanel::Update(int type)
+{
+	switch (type)
+	{
+	case 0:
+		break;
+
+	case 1: // 조명 방향 수정
+		{
+			// root property
+			if (CMFCPropertyGridProperty *group = m_lightProperty.GetProperty(0)) 
+			{
+				// direction property
+				if (CMFCPropertyGridProperty *prop = group->GetSubItem(5)) 
+				{
+					cLight &light = cController::Get()->GetSelectLight();
+					prop->GetSubItem(0)->SetValue(light.m_light.Direction.x);
+					prop->GetSubItem(1)->SetValue(light.m_light.Direction.y);
+					prop->GetSubItem(2)->SetValue(light.m_light.Direction.z);
+				}
+			}
+		}
+		break;
+	}
+
 }

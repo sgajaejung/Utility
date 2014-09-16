@@ -4,6 +4,7 @@
 // CD3DView ∫‰¿‘¥œ¥Ÿ.
 
 class CD3DView : public CView
+							, public common::iObserver2
 {
 public:
 	CD3DView();
@@ -12,6 +13,8 @@ public:
 	bool Init();
 	void Render();
 	void Update(float elapseT);
+
+	virtual void Update(int type) override;
 
 
 protected:
