@@ -58,7 +58,7 @@ BOOL CExpressionParser::Parse( BYTE *pFileMem, int nFileSize , BOOL bTrace )//bT
 }
 
 
-//	assignVOut -> VOut = exp
+//	assignVOut -> VOut = expr
 sExpr CExpressionParser::assignVOut()
 {
 	Match(VOUT);
@@ -69,7 +69,7 @@ sExpr CExpressionParser::assignVOut()
 }
 
 
-//	assignMOut -> MOut = exp
+//	assignMOut -> MOut = expr
 sExpr CExpressionParser::assignMOut()
 {
 	Match(MOUT);

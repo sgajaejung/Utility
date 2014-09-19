@@ -25,8 +25,8 @@ namespace parser
 		BOOL Match( Tokentype t );
 		void SyntaxError( char *szMsg, ... );
 
-		//	assignVOut -> VOut = exp
-		//	assignMOut -> MOut = exp
+		//	assignVOut -> VOut = expr
+		//	assignMOut -> MOut = expr
 
 		//	expr -> term +/- expr | term
 		//	term -> factor *// term | factor
